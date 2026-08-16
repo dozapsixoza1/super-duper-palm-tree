@@ -1,6 +1,6 @@
-const { handleUpdate } = require("../../lib/bot");
+import { handleUpdate } from "../../lib/bot";
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     if (req.method === "POST") {
       await handleUpdate(req.body);
@@ -9,4 +9,4 @@ module.exports = async function handler(req, res) {
     console.error("telegram webhook error:", err);
   }
   res.status(200).json({ ok: true });
-};
+}
