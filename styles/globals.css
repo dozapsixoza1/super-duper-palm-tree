@@ -1,68 +1,146 @@
-import Head from "next/head";
-import Link from "next/link";
-import { db } from "../../lib/firebase";
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap');
 
-export default function Post({ post }) {
-  if (!post) {
-    return (
-      <div className="wrap post-detail">
-        <p>Новость не найдена.</p>
-        <Link href="/" className="back-link">← на главную</Link>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <Head>
-        <title>{post.title} — Rusnet</title>
-      </Head>
-      <div className="wrap post-detail">
-        <Link href="/" className="back-link">← на главную</Link>
-
-        <div className="post-category">{post.category || "news"}</div>
-        <h1>{post.title}</h1>
-        <div className="post-meta">
-          {post.sourceName ? `По материалам: ${post.sourceName}` : "Rusnet"}
-        </div>
-
-        {post.image && <img src={post.image} alt="" className="post-image" />}
-
-        <div className="post-body">
-          {post.body.split("\n").filter(Boolean).map((para, i) => (
-            <p key={i}>{para}</p>
-          ))}
-        </div>
-
-        {post.sourceUrl && (
-          <div className="source-box">
-            Материал подготовлен на основе публикации {post.sourceName || "источника"}.{" "}
-            <a href={post.sourceUrl} target="_blank" rel="noopener noreferrer">
-              Читать оригинал →
-            </a>
-          </div>
-        )}
-      </div>
-    </>
-  );
+:root {
+  --bg: #0d0f10;
+  --bg-raised: #15181a;
+  --line: #2a2f33;
+  --text: #e9ecee;
+  --text-dim: #8b9296;
+  --accent: #ff8a3d;
 }
 
-export async function getServerSideProps({ params }) {
-  const doc = await db.collection("posts").doc(params.id).get();
-  if (!doc.exists) return { props: { post: null } };
+* { box-sizing: border-box; }
 
-  const data = doc.data();
-  return {
-    props: {
-      post: {
-        id: doc.id,
-        title: data.title || "",
-        body: data.body || "",
-        category: data.category || "news",
-        image: data.image || null,
-        sourceName: data.sourceName || null,
-        sourceUrl: data.sourceUrl || null,
-      },
-    },
-  };
-                    }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header {
+  border-bottom: 1px solid var(--line);
+  padding: 28px 0 20px;
+}
+
+.logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+}
+
+.logo span { color: var(--accent); }
+
+.tagline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.tagline::before { content: "$ "; color: var(--accent); }
+
+.feed {
+  padding: 32px 0 80px;
+}
+
+.post-row {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 16px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.post-row:hover .post-title { color: var(--accent); }
+
+.post-index {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-dim);
+  font-size: 13px;
+  padding-top: 3px;
+}
+
+.post-category {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  padding: 2px 6px;
+  margin-bottom: 8px;
+}
+
+.post-title {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.35;
+  transition: color 0.15s ease;
+}
+
+.post-meta {
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.empty {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.post-detail { padding: 40px 0 100px; }
+.post-detail h1 {
+  font-size: 32px;
+  line-height: 1.25;
+  margin: 16px 0 12px;
+}
+.post-detail .post-meta { margin-bottom: 28px; }
+.post-body {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.post-body p { margin: 0 0 18px; }
+.post-image {
+  width: 100%;
+  border-radius: 6px;
+  margin: 20px 0;
+  border: 1px solid var(--line);
+}
+.source-box {
+  margin-top: 40px;
+  padding: 16px 18px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.source-box a { color: var(--accent); }
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.back-link:hover { color: var(--accent); }
