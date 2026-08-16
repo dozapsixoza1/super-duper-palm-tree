@@ -36,9 +36,8 @@ export default function Post({ post }) {
 
         {post.sourceUrl && (
           <div className="source-box">
-            Материал подготовлен на основе публикации {post.sourceName || "источника"}.{" "}
             <a href={post.sourceUrl} target="_blank" rel="noopener noreferrer">
-              Читать оригинал →
+              Источник: {post.sourceName || "оригинал"} →
             </a>
           </div>
         )}
