@@ -1,6 +1,6 @@
-const { parseAllFeeds } = require("../../../lib/parser");
+import { parseAllFeeds } from "../../../lib/parser";
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   const auth = req.headers.authorization;
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     res.status(401).json({ ok: false, error: "unauthorized" });
@@ -14,4 +14,4 @@ module.exports = async function handler(req, res) {
     console.error("parse-feeds error:", err);
     res.status(500).json({ ok: false, error: String(err) });
   }
-};
+}
