@@ -1,47 +1,52 @@
 import Head from "next/head";
 import Link from "next/link";
 import { db } from "../../lib/firebase";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export default function Post({ post }) {
-  if (!post) {
-    return (
-      <div className="wrap post-detail">
-        <p>Новость не найдена.</p>
-        <Link href="/" className="back-link">← на главную</Link>
-      </div>
-    );
-  }
-
   return (
     <>
-      <Head>
-        <title>{post.title} — Rusnet</title>
-      </Head>
+      <Header />
       <div className="wrap post-detail">
-        <Link href="/" className="back-link">← на главную</Link>
+        {!post ? (
+          <>
+            <p>Новость не найдена.</p>
+            <Link href="/" className="back-link">← на главную</Link>
+          </>
+        ) : (
+          <>
+            <Head>
+              <title>{post.title} — Rusnet</title>
+            </Head>
 
-        <div className="post-category">{post.category || "news"}</div>
-        <h1>{post.title}</h1>
-        <div className="post-meta">
-          {post.sourceName ? `По материалам: ${post.sourceName}` : "Rusnet"}
-        </div>
+            <Link href="/" className="back-link">← на главную</Link>
 
-        {post.image && <img src={post.image} alt="" className="post-image" />}
+            <div className="post-category">{post.category || "news"}</div>
+            <h1>{post.title}</h1>
+            <div className="post-meta">
+              {post.sourceName ? `По материалам: ${post.sourceName}` : "Rusnet"}
+            </div>
 
-        <div className="post-body">
-          {post.body.split("\n").filter(Boolean).map((para, i) => (
-            <p key={i}>{para}</p>
-          ))}
-        </div>
+            {post.image && <img src={post.image} alt="" className="post-image" />}
 
-        {post.sourceUrl && (
-          <div className="source-box">
-            <a href={post.sourceUrl} target="_blank" rel="noopener noreferrer">
-              Источник: {post.sourceName || "оригинал"} →
-            </a>
-          </div>
+            <div className="post-body">
+              {post.body.split("\n").filter(Boolean).map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </div>
+
+            {post.sourceUrl && (
+              <div className="source-box">
+                <a href={post.sourceUrl} target="_blank" rel="noopener noreferrer">
+                  Источник: {post.sourceName || "оригинал"} →
+                </a>
+              </div>
+            )}
+          </>
         )}
       </div>
+      <Footer />
     </>
   );
 }
@@ -64,4 +69,4 @@ export async function getServerSideProps({ params }) {
       },
     },
   };
-    }
+}
